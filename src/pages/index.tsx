@@ -21,9 +21,9 @@ import PosterOne from "../assets/posters/playlist-1.png";
 import PosterTwo from "../assets/posters/playlist-2.png";
 
 // @ts-ignore
-import PlaylistOne from "../assets/playlists/playlist-1.mp4";
+import PlaylistOne from "@/assets/playlists/playlist-2.mp4";
 // @ts-ignore
-import PlaylistTwo from "@/assets/playlists/playlist-2.mp4";
+import PlaylistTwo from "../assets/playlists/playlist-1.mp4";
 
 import * as Styled from "@/styles";
 
@@ -94,10 +94,12 @@ export default function Home() {
       return;
     }
 
-    setPlaybackRate((oldValue) => oldValue + 0.5);
-    if (videoRef !== null && videoRef.current) {
-      videoRef.current.playbackRate = playbackRate;
-    }
+    setPlaybackRate((oldValue) => {
+      if (videoRef !== null && videoRef.current) {
+        videoRef.current.playbackRate = oldValue + 0.5;
+      }
+      return oldValue + 0.5;
+    });
   }
 
   function handleSlowDownMusic() {
@@ -107,10 +109,13 @@ export default function Home() {
       return;
     }
 
-    setPlaybackRate((oldValue) => oldValue * 0.5);
-    if (videoRef !== null && videoRef.current) {
-      videoRef.current.playbackRate = playbackRate;
-    }
+    setPlaybackRate((oldValue) => {
+      if (videoRef !== null && videoRef.current) {
+        videoRef.current.playbackRate = oldValue * 0.5;
+      }
+
+      return oldValue * 0.5;
+    });
   }
 
   function handleNextMusic(source: string) {
@@ -118,7 +123,9 @@ export default function Home() {
   }
 
   function handleEndedMusic() {
-    handlePlayMusic(MUSICS[1].src);
+    if (nextMusic !== null && nextMusic) {
+      handlePlayMusic(nextMusic);
+    }
   }
 
   function handleClick(source: string) {
@@ -256,7 +263,10 @@ export default function Home() {
                         size={24}
                         onClick={handleAccelerateMusic}
                       />
-                      <Plus size={24} onClick={handleNextMusic} />
+                      <Plus
+                        size={24}
+                        onClick={() => handleNextMusic(music.src)}
+                      />
                     </div>
                   </div>
                 </Styled.PlayslistCard>
@@ -265,16 +275,18 @@ export default function Home() {
           </Styled.PlayslistContainer>
         </Styled.Playslist>
       </Styled.Content>
-      <Styled.Playing>
-        {findCurrentMusic && (
+      {findCurrentMusic && (
+        <Styled.Playing>
           <Image
-            src={findCurrentMusic?.poster}
-            alt={findCurrentMusic?.title}
+            src={findCurrentMusic.poster}
+            alt={findCurrentMusic.title}
             draggable={false}
           />
-        )}
-        <span>{findCurrentMusic?.title}</span>
-      </Styled.Playing>
+
+          <span>{findCurrentMusic?.title}</span>
+          <div>banana</div>
+        </Styled.Playing>
+      )}
       <video
         src={currentMusic}
         ref={videoRef}
