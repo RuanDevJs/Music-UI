@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import Icon from "@/assets/Icon.svg";
 import {
+  ArrowArcRight,
   CaretDoubleLeft,
   CaretDoubleRight,
   CaretDown,
@@ -284,7 +285,11 @@ export default function Home() {
           />
 
           <span>{findCurrentMusic?.title}</span>
-          <div>banana</div>
+          {nextMusic && (
+            <span onClick={() => handlePlayMusic(nextMusic)}>
+              Play the next music
+            </span>
+          )}
         </Styled.Playing>
       )}
       <video
